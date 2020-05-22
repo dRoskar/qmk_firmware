@@ -41,9 +41,6 @@ enum custom_keycodes {
   ST_MACRO_4,
   ST_MACRO_5,
   ST_MACRO_6,
-  STATS_ADMIN_MACRO,
-  START_EVERYTHING_MACRO,
-  GIB_MACRO,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -98,14 +95,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [5] = LAYOUT_ergodox_pretty(
-    KC_TRANSPARENT, GIB_MACRO, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_NUMLOCK,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_KP_PLUS,     KC_KP_7,        KC_KP_8,        KC_KP_9,        SI_ASTR,        KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, START_EVERYTHING_MACRO, KC_TRANSPARENT, STATS_ADMIN_MACRO,                                                                 KC_KP_MINUS,    KC_KP_4,        KC_KP_5,        KC_KP_6,        KC_KP_SLASH,    SI_RABK,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, SI_EQL,         KC_KP_1,        KC_KP_2,        KC_KP_3,        SI_EURO,        SI_LABK,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, SI_DLR,         SI_PERC,
-                                                                                                    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, LSFT(KC_F11),   KC_TRANSPARENT, LALT(KC_UP),    LCTL(KC_KP_SLASH),KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, LALT(RCTL(KC_A)),KC_TRANSPARENT, KC_TRANSPARENT,                                                                 LCTL(KC_F11),   LALT(LCTL(KC_LEFT)),LALT(KC_DOWN),  LALT(LCTL(KC_RIGHT)),KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, LALT(KC_F8),    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                                 KC_F8,          KC_F7,          LSFT(KC_F8),    KC_TRANSPARENT, KC_TRANSPARENT,
+                                                                                                    LALT(LCTL(KC_C)),KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT,
-                                                                                    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
+                                                                                    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_F9
   ),
   [6] = LAYOUT_ergodox_pretty(
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
@@ -162,21 +159,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
       SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_O));
 
-    }
-    break;
-    case STATS_ADMIN_MACRO:
-    if (record->event.pressed) {
-      SEND_STRING("la.droskar" SS_RALT(SS_TAP(X_V)) "statsllc.onmicrosoft.com"SS_TAP(X_TAB)"Kadu9491");
-    }
-    break;
-	    case START_EVERYTHING_MACRO:
-    if (record->event.pressed) {
-      SEND_STRING(SS_LCTRL(SS_LALT(SS_TAP(X_A))));
-    }
-    break;
-	    case GIB_MACRO:
-    if (record->event.pressed) {
-      SEND_STRING("༼ つ ◕_◕ ༽つ");
     }
     break;
   }
