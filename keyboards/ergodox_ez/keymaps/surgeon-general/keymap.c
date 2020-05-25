@@ -168,9 +168,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case STATS_ADMIN_MACRO:
     if (record->event.pressed) {
       SEND_STRING("***" SS_RALT(SS_TAP(X_V)) "***"SS_TAP(X_TAB)"***"SS_TAP(X_ENTER));
-      ergodox_right_led_1_off();
-  ergodox_right_led_2_off();
-  ergodox_right_led_3_off();
     }
     break;
     case INTELLIJ_FIND_FILE_MACRO:
