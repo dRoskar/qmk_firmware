@@ -38,12 +38,9 @@ uint16_t alt_tab_timer = 0;
 enum custom_keycodes {
   RGB_SLD = EZ_SAFE_RANGE,
   ALTF4_MACRO,
-  ST_MACRO_1,
-  ST_MACRO_2,
-  ST_MACRO_3,
-  ST_MACRO_4,
-  ST_MACRO_5,
-  ST_MACRO_6,
+  GER_A_MACRO,
+  GER_U_MACRO,
+  GER_O_MACRO,
   STATS_ADMIN_MACRO,
   INTELLIJ_FIND_FILE_MACRO,
   SUPER_ALT_TAB,
@@ -67,7 +64,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [1] = LAYOUT_ergodox_pretty(
     SI_TILD,        KC_F1,          KC_F2,          KC_F3,          KC_F4,          KC_F5,          KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,
     KC_TRANSPARENT, SI_HASH,        SI_AMPR,        SI_LCBR,        SI_RCBR,        SI_PIPE,        KC_TRANSPARENT,                                 KC_TRANSPARENT, SI_DLR,         SI_COLN,        KC_UP,          SI_SCLN,        SI_PLUS,        KC_F12,
-    KC_TRANSPARENT, SI_EXLM,        SI_AT,          SI_LPRN,        SI_RPRN,        SI_LABK,                                                                        SI_EQL,         KC_LEFT,        KC_DOWN,        KC_RIGHT,       SI_QUES,        KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_LCPO,        KC_LAPO,        SI_LPRN,        KC_LSPO,        SI_LABK,                                                                        SI_EQL,         KC_LEFT,        KC_DOWN,        KC_RIGHT,       SI_QUES,        KC_TRANSPARENT,
     KC_LSHIFT,      SI_SLSH,        SI_BSLS,        SI_LBRC,        SI_RBRC,        SI_RABK,        ALTF4_MACRO,                                     KC_TRANSPARENT, SI_EURO,        SI_PERC,        SI_CIRC,        SI_ASTR,        SI_DQUO,        KC_TRANSPARENT,
     KC_LCTRL,       KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                                 KC_TRANSPARENT, SI_DEG,         SI_MUL,         SI_DIV,         KC_TRANSPARENT,
                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
@@ -95,11 +92,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [4] = LAYOUT_ergodox_pretty(
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, ST_MACRO_3,     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, ST_MACRO_1,     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, ST_MACRO_4,     KC_TRANSPARENT, ST_MACRO_5,     KC_TRANSPARENT,
-    KC_TRANSPARENT, ST_MACRO_2,     KC_TRANSPARENT, SI_SS,          KC_LSHIFT,      KC_TRANSPARENT,                                                                 KC_TRANSPARENT, KC_RSHIFT,      KC_TRANSPARENT, KC_TRANSPARENT, ST_MACRO_6,     KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, GER_U_MACRO,     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, GER_A_MACRO,     KC_TRANSPARENT, SI_SS,          KC_LSHIFT,      KC_TRANSPARENT,                                                                 KC_TRANSPARENT, KC_RSHIFT,     KC_TRANSPARENT,  KC_TRANSPARENT, GER_O_MACRO,    KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                                 KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
@@ -135,45 +132,45 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     }
     break;
-    case ST_MACRO_1:
+    case GER_A_MACRO:
     if (record->event.pressed) {
-      SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_A)));
-
+      if (get_mods() & MOD_MASK_SHIFT) {
+        unregister_code(KC_LSFT);
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_A)));
+        register_code(KC_LSFT);
+      } else {
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_A));
+      }
     }
     break;
-    case ST_MACRO_2:
+    case GER_U_MACRO:
     if (record->event.pressed) {
-      SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_A));
-
+      if (get_mods() & MOD_MASK_SHIFT) {
+        unregister_code(KC_LSFT);
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_U)));
+        register_code(KC_LSFT);
+      } else {
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_U));
+      }
     }
     break;
-    case ST_MACRO_3:
+    case GER_O_MACRO:
     if (record->event.pressed) {
-      SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_U)));
-
-    }
-    break;
-    case ST_MACRO_4:
-    if (record->event.pressed) {
-      SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_U));
-
-    }
-    break;
-    case ST_MACRO_5:
-    if (record->event.pressed) {
-      SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_O)));
-
-    }
-    break;
-    case ST_MACRO_6:
-    if (record->event.pressed) {
-      SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_O));
-
+      if (get_mods() & MOD_MASK_SHIFT) {
+        unregister_code(KC_LSFT);
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_O)));
+        register_code(KC_LSFT);
+      } else {
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_O));
+      }
     }
     break;
     case STATS_ADMIN_MACRO:
     if (record->event.pressed) {
-      SEND_STRING("***" SS_RALT(SS_TAP(X_V)) "***"SS_TAP(X_TAB)"***");
+      SEND_STRING("***" SS_RALT(SS_TAP(X_V)) "***"SS_TAP(X_TAB)"***"SS_TAP(X_ENTER));
+      ergodox_right_led_1_off();
+  ergodox_right_led_2_off();
+  ergodox_right_led_3_off();
     }
     break;
     case INTELLIJ_FIND_FILE_MACRO:
