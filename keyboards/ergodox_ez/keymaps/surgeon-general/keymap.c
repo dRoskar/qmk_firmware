@@ -34,6 +34,39 @@
 
 bool is_alt_tab_active = false;
 uint16_t alt_tab_timer = 0;
+static uint8_t saved_mods = 0;
+
+typedef struct {
+  bool is_press_action;
+  int state;
+} tap;
+
+enum {
+  SINGLE_TAP = 1,
+  SINGLE_HOLD = 2,
+  DOUBLE_TAP = 3,
+  DOUBLE_HOLD = 4,
+  DOUBLE_SINGLE_TAP = 5, //send two single taps
+  TRIPLE_TAP = 6,
+  TRIPLE_HOLD = 7
+};
+
+//Tap dance enums
+enum {
+  AT_ALT = 0,
+  F5_CLEAR_CACHE
+};
+
+int cur_dance (qk_tap_dance_state_t *state);
+
+//for the at_alt tap dance. Put it here so it can be used in any keymap
+void at_alt_finished (qk_tap_dance_state_t *state, void *user_data);
+void at_alt_reset (qk_tap_dance_state_t *state, void *user_data);
+
+//for the f5 tap dance. Put it here so it can be used in any keymap
+void f5_finished (qk_tap_dance_state_t *state, void *user_data);
+void f5_reset (qk_tap_dance_state_t *state, void *user_data);
+
 
 enum custom_keycodes {
   RGB_SLD = EZ_SAFE_RANGE,
@@ -62,20 +95,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     MO(1),          LT(5,KC_HOME),  KC_TRANSPARENT, KC_TRANSPARENT, KC_END,         LT(2,KC_ENTER)
   ),
   [1] = LAYOUT_ergodox_pretty(
-    SI_TILD,        KC_F1,          KC_F2,          KC_F3,          KC_F4,          KC_F5,          KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,
-    KC_TRANSPARENT, SI_HASH,        SI_AMPR,        SI_LCBR,        SI_RCBR,        SI_PIPE,        KC_TRANSPARENT,                                 KC_TRANSPARENT, SI_DLR,         SI_COLN,        KC_UP,          SI_SCLN,        SI_PLUS,        KC_F12,
-    KC_TRANSPARENT, KC_LCPO,        KC_LAPO,        SI_LPRN,        KC_LSPO,        SI_LABK,                                                                        SI_EQL,         KC_LEFT,        KC_DOWN,        KC_RIGHT,       SI_QUES,        KC_TRANSPARENT,
-    KC_LSHIFT,      SI_SLSH,        SI_BSLS,        SI_LBRC,        SI_RBRC,        SI_RABK,        ALTF4_MACRO,                                     KC_TRANSPARENT, SI_EURO,        SI_PERC,        SI_CIRC,        SI_ASTR,        SI_DQUO,        KC_TRANSPARENT,
-    KC_LCTRL,       KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                                 KC_TRANSPARENT, SI_DEG,         SI_MUL,         SI_DIV,         KC_TRANSPARENT,
+    SI_TILD,        KC_F1,          KC_F2,          KC_F3,          KC_F4,          TD(F5_CLEAR_CACHE), KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,
+    KC_TRANSPARENT, SI_HASH,        SI_AMPR,        SI_LCBR,        SI_RCBR,        SI_PIPE,            KC_TRANSPARENT,                                 KC_TRANSPARENT, SI_DLR,         SI_COLN,        KC_UP,          SI_SCLN,        SI_PLUS,        KC_F12,
+    KC_TRANSPARENT, KC_LCPO,        TD(AT_ALT),     SI_LPRN,        KC_LSPO,        SI_LABK,                                                                            SI_EQL,         KC_LEFT,        KC_DOWN,        KC_RIGHT,       SI_QUES,        KC_TRANSPARENT,
+    KC_TRANSPARENT, SI_SLSH,        SI_BSLS,        SI_LBRC,        SI_RBRC,        SI_RABK,            ALTF4_MACRO,                                    KC_TRANSPARENT, SI_EURO,        SI_PERC,        SI_CIRC,        SI_ASTR,        SI_DQUO,        KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                     KC_TRANSPARENT, SI_DEG,         SI_MUL,         SI_DIV,         KC_TRANSPARENT,
                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [2] = LAYOUT_ergodox_pretty(
     WEBUSB_PAIR,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,   KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, RESET,
-    KC_AUDIO_MUTE,  KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_UP,       KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, LSFT(LCTL(KC_T)), KC_MS_WH_UP,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_AUDIO_VOL_UP,KC_TRANSPARENT, KC_MS_LEFT,     KC_MS_DOWN,     KC_MS_RIGHT,    KC_TRANSPARENT,                                                                 KC_TRANSPARENT, KC_MS_WH_LEFT,    KC_MS_WH_DOWN,  KC_MS_WH_RIGHT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_AUDIO_VOL_DOWN,KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                               KC_TRANSPARENT, KC_TRANSPARENT, KC_WWW_BACK,      KC_TRANSPARENT, KC_WWW_FORWARD, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_AUDIO_MUTE,  KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_UP,       KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 MEH(KC_D), KC_TRANSPARENT, LSFT(LCTL(KC_T)), KC_MS_WH_UP,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_AUDIO_VOL_UP,KC_LSFT, KC_MS_LEFT,     KC_MS_DOWN,     KC_MS_RIGHT,    KC_TRANSPARENT,                                                                        KC_TRANSPARENT, KC_MS_WH_LEFT,    KC_MS_WH_DOWN,  KC_MS_WH_RIGHT, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_AUDIO_VOL_DOWN,KC_LCTL, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                      MEH(KC_V), KC_TRANSPARENT, KC_WWW_BACK,      KC_TRANSPARENT, KC_WWW_FORWARD, KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_MS_BTN2,     KC_MS_BTN3,     KC_MS_BTN1,                                                                                                     KC_TRANSPARENT,   KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT,
@@ -94,7 +127,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [4] = LAYOUT_ergodox_pretty(
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, GER_U_MACRO,     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, GER_A_MACRO,     KC_TRANSPARENT, SI_SS,          KC_LSHIFT,      KC_TRANSPARENT,                                                                 KC_TRANSPARENT, KC_RSHIFT,     KC_TRANSPARENT,  KC_TRANSPARENT, GER_O_MACRO,    KC_TRANSPARENT,
+    KC_TRANSPARENT, GER_A_MACRO,     KC_TRANSPARENT, SI_SS,         KC_LSHIFT,      KC_TRANSPARENT,                                                                 KC_TRANSPARENT, KC_RSHIFT,     KC_TRANSPARENT,  KC_TRANSPARENT, GER_O_MACRO,    KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                                 KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
@@ -104,10 +137,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [5] = LAYOUT_ergodox_pretty(
     KC_TRANSPARENT, JUNK_MAIL_MACRO,   PERSONAL_MAIL_MACRO, KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 CUT_ALL_MACRO,  KC_TRANSPARENT, KC_TRANSPARENT,       KC_TRANSPARENT, KC_TRANSPARENT,           KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, STATS_ADMIN_MACRO, KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 CPY_ALL_MACRO,  LSFT(KC_F11),   LSFT(LCTL(KC_F)),     LALT(KC_UP),    INTELLIJ_FIND_FILE_MACRO, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      LALT(RCTL(KC_A)),  KC_TRANSPARENT, KC_TRANSPARENT,                                                                 LCTL(KC_F11),   LALT(LCTL(KC_LEFT)),  LALT(KC_DOWN),  LALT(LCTL(KC_RIGHT)),     KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      MEH(KC_S),         KC_TRANSPARENT, KC_TRANSPARENT,                                                                 LCTL(KC_F11),   LALT(LCTL(KC_LEFT)),  LALT(KC_DOWN),  LALT(LCTL(KC_RIGHT)),     KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, LALT(KC_F8),    LCTL(KC_KP_SLASH),    KC_TRANSPARENT, KC_TRANSPARENT,           KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT,                                                                                                 KC_F8,                KC_F7,          LSFT(KC_F8),              KC_TRANSPARENT, KC_TRANSPARENT,
-                                                                                                        LALT(LCTL(KC_C)),KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+                                                                                                        MEH(KC_C),KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                                         KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                         KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_F9
   ),
@@ -135,9 +168,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case GER_A_MACRO:
     if (record->event.pressed) {
       if (get_mods() & MOD_MASK_SHIFT) {
-        unregister_code(KC_LSFT);
+        saved_mods = get_mods();
+        clear_mods();
         SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_A)));
-        register_code(KC_LSFT);
+        set_mods(saved_mods);
       } else {
         SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_A));
       }
@@ -146,9 +180,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case GER_U_MACRO:
     if (record->event.pressed) {
       if (get_mods() & MOD_MASK_SHIFT) {
-        unregister_code(KC_LSFT);
+        saved_mods = get_mods();
+        clear_mods();
         SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_U)));
-        register_code(KC_LSFT);
+        set_mods(saved_mods);
       } else {
         SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_U));
       }
@@ -157,9 +192,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case GER_O_MACRO:
     if (record->event.pressed) {
       if (get_mods() & MOD_MASK_SHIFT) {
-        unregister_code(KC_LSFT);
+        saved_mods = get_mods();
+        clear_mods();
         SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_O)));
-        register_code(KC_LSFT);
+        set_mods(saved_mods);
       } else {
         SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_O));
       }
@@ -260,4 +296,128 @@ uint32_t layer_state_set_user(uint32_t state) {
       break;
   }
   return state;
+};
+
+/* Return an integer that corresponds to what kind of tap dance should be executed.
+ *
+ * How to figure out tap dance state: interrupted and pressed.
+ *
+ * Interrupted: If the state of a dance dance is "interrupted", that means that another key has been hit
+ *  under the tapping term. This is typically indicitive that you are trying to "tap" the key.
+ *
+ * Pressed: Whether or not the key is still being pressed. If this value is true, that means the tapping term
+ *  has ended, but the key is still being pressed down. This generally means the key is being "held".
+ *
+ * One thing that is currenlty not possible with qmk software in regards to tap dance is to mimic the "permissive hold"
+ *  feature. In general, advanced tap dances do not work well if they are used with commonly typed letters.
+ *  For example "A". Tap dances are best used on non-letter keys that are not hit while typing letters.
+ *
+ * Good places to put an advanced tap dance:
+ *  z,q,x,j,k,v,b, any function key, home/end, comma, semi-colon
+ *
+ * Criteria for "good placement" of a tap dance key:
+ *  Not a key that is hit frequently in a sentence
+ *  Not a key that is used frequently to double tap, for example 'tab' is often double tapped in a terminal, or
+ *    in a web form. So 'tab' would be a poor choice for a tap dance.
+ *  Letters used in common words as a double. For example 'p' in 'pepper'. If a tap dance function existed on the
+ *    letter 'p', the word 'pepper' would be quite frustating to type.
+ *
+ * For the third point, there does exist the 'DOUBLE_SINGLE_TAP', however this is not fully tested
+ *
+ */
+int cur_dance (qk_tap_dance_state_t *state) {
+  if (state->count == 1) {
+    if (state->interrupted || !state->pressed)  return SINGLE_TAP;
+    //key has not been interrupted, but they key is still held. Means you want to send a 'HOLD'.
+    else return SINGLE_HOLD;
+  }
+  else if (state->count == 2) {
+    /*
+     * DOUBLE_SINGLE_TAP is to distinguish between typing "pepper", and actually wanting a double tap
+     * action when hitting 'pp'. Suggested use case for this return value is when you want to send two
+     * keystrokes of the key, and not the 'double tap' action/macro.
+    */
+    if (state->interrupted) return DOUBLE_SINGLE_TAP;
+    else if (state->pressed) return DOUBLE_HOLD;
+    else return DOUBLE_TAP;
+  }
+  //Assumes no one is trying to type the same letter three times (at least not quickly).
+  //If your tap dance key is 'KC_W', and you want to type "www." quickly - then you will need to add
+  //an exception here to return a 'TRIPLE_SINGLE_TAP', and define that enum just like 'DOUBLE_SINGLE_TAP'
+  if (state->count == 3) {
+    if (state->interrupted || !state->pressed)  return TRIPLE_TAP;
+    else return TRIPLE_HOLD;
+  }
+  else return 8; //magic number. At some point this method will expand to work for more presses
+}
+
+// ------------------------- AT ALT TAP DANCE ----------------------------
+
+//instanalize an instance of 'tap' for the 'at_alt' tap dance.
+static tap at_alt_tap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void at_alt_finished (qk_tap_dance_state_t *state, void *user_data) {
+  at_alt_tap_state.state = cur_dance(state);
+  switch (at_alt_tap_state.state) {
+    case SINGLE_TAP: register_code(KC_RALT); register_code(KC_V); break;
+    case SINGLE_HOLD: register_code(KC_LALT); break;
+    case DOUBLE_TAP: register_code(KC_RALT); register_code(KC_V); unregister_code(KC_V); unregister_code(KC_RALT); register_code(KC_RALT); register_code(KC_V); break;
+    case DOUBLE_HOLD: register_code(KC_RALT); register_code(KC_V); unregister_code(KC_V); unregister_code(KC_RALT); register_code(KC_LALT); break;
+    case DOUBLE_SINGLE_TAP: register_code(KC_RALT); register_code(KC_V); unregister_code(KC_V); unregister_code(KC_RALT); register_code(KC_RALT); register_code(KC_V); 
+    //Last case is for fast typing. Assuming your key is `f`:
+    //For example, when typing the word `buffer`, and you want to make sure that you send `ff` and not `Esc`.
+    //In order to type `ff` when typing fast, the next character will have to be hit within the `TAPPING_TERM`, which by default is 200ms.
+  }
+}
+
+void at_alt_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (at_alt_tap_state.state) {
+    case SINGLE_TAP: unregister_code(KC_V); unregister_code(KC_RALT); break;
+    case SINGLE_HOLD: unregister_code(KC_LALT); break;
+    case DOUBLE_TAP: unregister_code(KC_V); unregister_code(KC_RALT); break;
+    case DOUBLE_HOLD: unregister_code(KC_LALT);
+    case DOUBLE_SINGLE_TAP: unregister_code(KC_V); unregister_code(KC_RALT);
+  }
+  at_alt_tap_state.state = 0;
+}
+
+// ------------------------- F5 / CLEAR CACHE TAP DANCE ----------------------------
+
+//instanalize an instance of 'tap' for the 'f5' tap dance.
+static tap f5_tap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void f5_finished (qk_tap_dance_state_t *state, void *user_data) {
+  f5_tap_state.state = cur_dance(state);
+  switch (f5_tap_state.state) {
+    case SINGLE_TAP: register_code(KC_F5); break;
+    case SINGLE_HOLD: register_code(KC_F5); break;
+    case DOUBLE_TAP: register_code(KC_LCTL); register_code(KC_F5); break;
+    case DOUBLE_HOLD: register_code(KC_F5); unregister_code(KC_F5); register_code(KC_F5); break;
+    case DOUBLE_SINGLE_TAP: register_code(KC_F5); unregister_code(KC_F5); register_code(KC_F5);
+    //Last case is for fast typing. Assuming your key is `f`:
+    //For example, when typing the word `buffer`, and you want to make sure that you send `ff` and not `Esc`.
+    //In order to type `ff` when typing fast, the next character will have to be hit within the `TAPPING_TERM`, which by default is 200ms.
+  }
+}
+
+void f5_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (f5_tap_state.state) {
+    case SINGLE_TAP: unregister_code(KC_F5); break;
+    case SINGLE_HOLD: unregister_code(KC_F5); break;
+    case DOUBLE_TAP: unregister_code(KC_F5); unregister_code(KC_LCTL); break;
+    case DOUBLE_HOLD: unregister_code(KC_F5);
+    case DOUBLE_SINGLE_TAP: unregister_code(KC_F5);
+  }
+  f5_tap_state.state = 0;
+}
+
+qk_tap_dance_action_t tap_dance_actions[] = {
+  [AT_ALT] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL,at_alt_finished, at_alt_reset,150),
+  [F5_CLEAR_CACHE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL,f5_finished, f5_reset,200)
 };
