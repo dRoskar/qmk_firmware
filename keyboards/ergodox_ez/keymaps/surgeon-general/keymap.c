@@ -170,10 +170,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (get_mods() & MOD_MASK_SHIFT) {
         saved_mods = get_mods();
         clear_mods();
-        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_A)));
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_LSFT(SS_TAP(X_A)));
         set_mods(saved_mods);
       } else {
-        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_A));
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_TAP(X_A));
       }
     }
     break;
@@ -182,10 +182,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (get_mods() & MOD_MASK_SHIFT) {
         saved_mods = get_mods();
         clear_mods();
-        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_U)));
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_LSFT(SS_TAP(X_U)));
         set_mods(saved_mods);
       } else {
-        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_U));
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_TAP(X_U));
       }
     }
     break;
@@ -194,10 +194,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (get_mods() & MOD_MASK_SHIFT) {
         saved_mods = get_mods();
         clear_mods();
-        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_LSFT(SS_TAP(X_O)));
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_LSFT(SS_TAP(X_O)));
         set_mods(saved_mods);
       } else {
-        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_DELAY(100) SS_TAP(X_O));
+        SEND_STRING(SS_RALT(SS_TAP(X_MINUS)) SS_TAP(X_O));
       }
     }
     break;
