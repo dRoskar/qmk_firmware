@@ -54,7 +54,8 @@ enum {
 //Tap dance enums
 enum {
   AT_ALT = 0,
-  F5_CLEAR_CACHE
+  F5_CLEAR_CACHE,
+  MEOW
 };
 
 int cur_dance (qk_tap_dance_state_t *state);
@@ -85,14 +86,14 @@ enum custom_keycodes {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_ergodox_pretty(
-    LCTL(SI_CEDL),  KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           KC_TRANSPARENT,                                 LCTL(KC_X),     KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           LCTL(LSFT(KC_Y)),
+    LCTL(SI_CEDL),  KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           TD(MEOW),                             LCTL(KC_X),     KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           LCTL(LSFT(KC_Y)),
     KC_TRANSPARENT, KC_Q,           KC_W,           KC_F,           KC_P,           KC_B,           KC_TRANSPARENT,                                 LCTL(KC_C),     KC_J,           KC_L,           KC_U,           KC_Z,           SI_MINS,        LCTL(KC_Y),
     KC_TAB,         LCTL_T(KC_A),   LALT_T(KC_R),   KC_S,           LSFT_T(KC_T),   KC_G,                                                                           KC_K,           RSFT_T(KC_N),   KC_E,           LALT_T(KC_I),   RCTL_T(KC_O),   KC_DELETE,
     SUPER_ALT_TAB,  KC_Y,           KC_X,           KC_C,           KC_D,           KC_V,           KC_TRANSPARENT,                                 LCTL(KC_V),     KC_M,           KC_H,           KC_COMMA,       KC_DOT,         SI_QUOT,        KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_ESCAPE,      MO(4),          KC_SPACE,                                                                                                       KC_BSPACE,      MO(3),          KC_LGUI,        KC_TRANSPARENT, TG(6),
                                                                                                     KC_TRANSPARENT, KC_PGUP,        LCTL(KC_PSCREEN),KC_TRANSPARENT,
                                                                                                                     KC_PGDOWN,      KC_TRANSPARENT,
-                                                                                    MO(1),          LT(5,KC_HOME),  KC_TRANSPARENT, KC_TRANSPARENT, KC_END,         LT(2,KC_ENTER)
+                                                                                    MO(1),          LT(5,KC_END),  KC_TRANSPARENT, KC_TRANSPARENT, KC_HOME,         LT(2,KC_ENTER)
   ),
   [1] = LAYOUT_ergodox_pretty(
     SI_TILD,        KC_F1,          KC_F2,          KC_F3,          KC_F4,          TD(F5_CLEAR_CACHE), KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,
@@ -203,7 +204,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     break;
     case STATS_ADMIN_MACRO:
     if (record->event.pressed) {
-      SEND_STRING("***" SS_RALT(SS_TAP(X_V)) "***"SS_TAP(X_TAB)"***"SS_TAP(X_ENTER));
+      SEND_STRING("la.droskar" SS_RALT(SS_TAP(X_V)) "statsllc.onmicrosoft.com"SS_TAP(X_TAB)"Kadu9491"SS_TAP(X_ENTER));
     }
     break;
     case INTELLIJ_FIND_FILE_MACRO:
@@ -228,12 +229,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     break;
     case JUNK_MAIL_MACRO:
     if (record->event.pressed) {
-      SEND_STRING("***"SS_RALT(SS_TAP(X_V))"gmail.com");
+      SEND_STRING("mastuh8"SS_RALT(SS_TAP(X_V))"gmail.com");
     }
     break;
     case PERSONAL_MAIL_MACRO:
   	if (record->event.pressed) {
-      SEND_STRING("***"SS_RALT(SS_TAP(X_V))"gmail.com");
+      SEND_STRING("damjan.roskar.s"SS_RALT(SS_TAP(X_V))"gmail.com");
     }
     break;
     case CPY_ALL_MACRO:
@@ -417,7 +418,145 @@ void f5_reset (qk_tap_dance_state_t *state, void *user_data) {
   f5_tap_state.state = 0;
 }
 
+// ------------------------- MEOW TAP DANCE ----------------------------
+
+//instanalize an instance of 'tap' for the 'f5' tap dance.
+static tap meow_tap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void meow (qk_tap_dance_state_t *state, void *user_data) {
+  meow_tap_state.state = cur_dance(state);
+  if (state->count >= 9) {
+      SEND_STRING(SS_LCTL(SS_RALT(SS_LSFT(SS_TAP(X_N)))));
+      ergodox_right_led_1_on();
+      wait_ms(15);
+      ergodox_right_led_3_on();
+      wait_ms(15);
+      ergodox_right_led_1_off();
+      wait_ms(15);
+      ergodox_right_led_3_off();
+      ergodox_right_led_2_on();
+      wait_ms(15);
+      ergodox_right_led_1_on();
+      wait_ms(15);
+      ergodox_right_led_1_off();
+      ergodox_right_led_3_on();
+      wait_ms(15);
+      ergodox_right_led_2_off();
+      wait_ms(15);
+      ergodox_right_led_2_on();
+      ergodox_right_led_1_on();
+      ergodox_right_led_3_off();
+      wait_ms(15);
+      ergodox_right_led_1_off();
+      wait_ms(15);
+      ergodox_right_led_3_on();
+      ergodox_right_led_2_off();
+      wait_ms(15);
+      ergodox_right_led_2_on();
+      ergodox_right_led_3_off();
+      wait_ms(15);
+      ergodox_right_led_1_on();
+      wait_ms(15);
+      ergodox_right_led_3_on();
+      wait_ms(15);
+      ergodox_right_led_1_off();
+      ergodox_right_led_2_off();
+      wait_ms(15);
+      
+      wait_ms(15);
+      ergodox_right_led_1_on();
+      ergodox_right_led_3_off();
+      ergodox_right_led_2_on();
+      wait_ms(15);
+      ergodox_right_led_1_off();
+      wait_ms(15);
+      ergodox_right_led_3_on();
+      wait_ms(15);
+      ergodox_right_led_2_off();
+      wait_ms(15);
+      ergodox_right_led_3_off();
+      wait_ms(15);
+      ergodox_right_led_1_on();
+      ergodox_right_led_3_on();
+      wait_ms(15);
+      ergodox_right_led_2_on();
+      wait_ms(15);
+      ergodox_right_led_1_off();
+      ergodox_right_led_2_off();
+      wait_ms(15);
+      ergodox_right_led_1_on();
+      ergodox_right_led_3_off();
+      wait_ms(15);
+      ergodox_right_led_3_on();
+      ergodox_right_led_1_off();
+      ergodox_right_led_2_on();
+      wait_ms(15);
+      ergodox_right_led_3_off();
+      ergodox_right_led_1_on();
+      wait_ms(15);
+      
+      wait_ms(15);
+      ergodox_right_led_2_off();
+      wait_ms(15);
+      ergodox_right_led_1_off();
+      ergodox_right_led_3_on();
+      wait_ms(15);
+      ergodox_right_led_2_on();
+      wait_ms(15);
+      ergodox_right_led_3_off();
+      ergodox_right_led_1_on();
+      wait_ms(15);
+      ergodox_right_led_1_off();
+      
+      wait_ms(15);
+      ergodox_right_led_3_on();
+      wait_ms(15);
+      ergodox_right_led_3_off();
+      ergodox_right_led_2_off();
+      state->count = 0;
+      reset_tap_dance(state);
+  }
+}
+
+void meow_finished (qk_tap_dance_state_t *state, void *user_data) {
+  meow_tap_state.state = cur_dance(state);
+  if (state->count == 1) {
+    int chance = rand() % 100;
+    if (chance < 30) {
+      SEND_STRING(SS_LCTL(SS_RALT(SS_LSFT(SS_TAP(X_M)))));
+      ergodox_right_led_1_on();
+      wait_ms(50);
+      ergodox_right_led_2_on();
+      wait_ms(50);
+      ergodox_right_led_3_on();
+      wait_ms(50);
+      ergodox_right_led_1_off();
+      wait_ms(50);
+      ergodox_right_led_2_off();
+      wait_ms(50);
+      ergodox_right_led_3_off();
+      wait_ms(25);
+      ergodox_right_led_3_on();
+      wait_ms(50);
+      ergodox_right_led_2_on();
+      wait_ms(50);
+      ergodox_right_led_1_on();
+      wait_ms(50);
+      ergodox_right_led_3_off();
+      wait_ms(50);
+      ergodox_right_led_2_off();
+      wait_ms(50);
+      ergodox_right_led_1_off();
+      reset_tap_dance(state);
+    }
+  }
+}
+
 qk_tap_dance_action_t tap_dance_actions[] = {
   [AT_ALT] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL,at_alt_finished, at_alt_reset,150),
-  [F5_CLEAR_CACHE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL,f5_finished, f5_reset,200)
+  [F5_CLEAR_CACHE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL,f5_finished, f5_reset,200),
+  [MEOW] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(meow,meow_finished,NULL,200)
 };
