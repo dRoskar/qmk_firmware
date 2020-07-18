@@ -82,11 +82,12 @@ enum custom_keycodes {
   PERSONAL_MAIL_MACRO,
   CPY_ALL_MACRO,
   CUT_ALL_MACRO,
+  REPLACE_PASTE_MACRO
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_ergodox_pretty(
-    LCTL(SI_CEDL),  KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           TD(MEOW),                             LCTL(KC_X),     KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           LCTL(LSFT(KC_Y)),
+    LCTL(SI_CEDL),  KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           TD(MEOW),                                       LCTL(KC_X),     KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           LCTL(LSFT(KC_Y)),
     KC_TRANSPARENT, KC_Q,           KC_W,           KC_F,           KC_P,           KC_B,           KC_TRANSPARENT,                                 LCTL(KC_C),     KC_J,           KC_L,           KC_U,           KC_Z,           SI_MINS,        LCTL(KC_Y),
     KC_TAB,         LCTL_T(KC_A),   LALT_T(KC_R),   KC_S,           LSFT_T(KC_T),   KC_G,                                                                           KC_K,           RSFT_T(KC_N),   KC_E,           LALT_T(KC_I),   RCTL_T(KC_O),   KC_DELETE,
     SUPER_ALT_TAB,  KC_Y,           KC_X,           KC_C,           KC_D,           KC_V,           KC_TRANSPARENT,                                 LCTL(KC_V),     KC_M,           KC_H,           KC_COMMA,       KC_DOT,         SI_QUOT,        KC_TRANSPARENT,
@@ -99,7 +100,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     SI_TILD,        KC_F1,          KC_F2,          KC_F3,          KC_F4,          TD(F5_CLEAR_CACHE), KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,
     KC_TRANSPARENT, SI_HASH,        SI_AMPR,        SI_LCBR,        SI_RCBR,        SI_PIPE,            KC_TRANSPARENT,                                 KC_TRANSPARENT, SI_DLR,         SI_COLN,        KC_UP,          SI_SCLN,        SI_PLUS,        KC_F12,
     KC_TRANSPARENT, KC_LCPO,        TD(AT_ALT),     SI_LPRN,        KC_LSPO,        SI_LABK,                                                                            SI_EQL,         KC_LEFT,        KC_DOWN,        KC_RIGHT,       SI_QUES,        KC_TRANSPARENT,
-    KC_TRANSPARENT, SI_SLSH,        SI_BSLS,        SI_LBRC,        SI_RBRC,        SI_RABK,            ALTF4_MACRO,                                    KC_TRANSPARENT, SI_EURO,        SI_PERC,        SI_CIRC,        SI_ASTR,        SI_DQUO,        KC_TRANSPARENT,
+    KC_TRANSPARENT, SI_SLSH,        SI_BSLS,        SI_LBRC,        SI_RBRC,        SI_RABK,            KC_TRANSPARENT,                                 KC_TRANSPARENT, SI_EURO,        SI_PERC,        SI_CIRC,        SI_ASTR,        SI_DQUO,        KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                                                                     KC_TRANSPARENT, SI_DEG,         SI_MUL,         SI_DIV,         KC_TRANSPARENT,
                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                                     KC_TRANSPARENT, KC_TRANSPARENT,
@@ -136,10 +137,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [5] = LAYOUT_ergodox_pretty(
-    KC_TRANSPARENT, JUNK_MAIL_MACRO,   PERSONAL_MAIL_MACRO, KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 CUT_ALL_MACRO,  KC_TRANSPARENT, KC_TRANSPARENT,       KC_TRANSPARENT, KC_TRANSPARENT,           KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, STATS_ADMIN_MACRO, KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 CPY_ALL_MACRO,  LSFT(KC_F11),   LSFT(LCTL(KC_F)),     LALT(KC_UP),    INTELLIJ_FIND_FILE_MACRO, KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      MEH(KC_S),         KC_TRANSPARENT, KC_TRANSPARENT,                                                                 LCTL(KC_F11),   LALT(LCTL(KC_LEFT)),  LALT(KC_DOWN),  LALT(LCTL(KC_RIGHT)),     KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 KC_TRANSPARENT, LALT(KC_F8),    LCTL(KC_KP_SLASH),    KC_TRANSPARENT, KC_TRANSPARENT,           KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, JUNK_MAIL_MACRO,   PERSONAL_MAIL_MACRO, KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 CUT_ALL_MACRO,       KC_TRANSPARENT, KC_TRANSPARENT,       KC_TRANSPARENT, KC_TRANSPARENT,           KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, STATS_ADMIN_MACRO, KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 CPY_ALL_MACRO,       LSFT(KC_F11),   LSFT(LCTL(KC_F)),     LALT(KC_UP),    INTELLIJ_FIND_FILE_MACRO, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      MEH(KC_S),         KC_TRANSPARENT, KC_TRANSPARENT,                                                                      LCTL(KC_F11),   LALT(LCTL(KC_LEFT)),  LALT(KC_DOWN),  LALT(LCTL(KC_RIGHT)),     KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, ALTF4_MACRO,                                    REPLACE_PASTE_MACRO, LALT(KC_F8),    LCTL(KC_KP_SLASH),    LALT(KC_INS), KC_TRANSPARENT,           KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT,                                                                                                 KC_F8,                KC_F7,          LSFT(KC_F8),              KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                         MEH(KC_C),KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                                                                                                                         KC_TRANSPARENT, KC_TRANSPARENT,
@@ -245,6 +246,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case CUT_ALL_MACRO:
   	if (record->event.pressed) {
       SEND_STRING(SS_LCTL("ax"));
+    }
+    break;
+    case REPLACE_PASTE_MACRO:
+  	if (record->event.pressed) {
+      SEND_STRING(SS_LCTL("av"));
     }
     break;
   }
