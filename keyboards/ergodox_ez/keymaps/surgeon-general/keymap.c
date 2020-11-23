@@ -55,7 +55,9 @@ enum {
 enum {
   AT_ALT = 0,
   F5_CLEAR_CACHE,
-  MEOW
+  MEOW,
+  EMOJI_GIB,
+  EMOJI_LOOK
 };
 
 int cur_dance (qk_tap_dance_state_t *state);
@@ -140,8 +142,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                                     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [5] = LAYOUT_ergodox_pretty( /*Macro/Intellij*/
-    KC_TRANSPARENT, JUNK_MAIL_MACRO,   PERSONAL_MAIL_MACRO, KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, TO(7),                                          CUT_ALL_MACRO,       KC_TRANSPARENT, KC_TRANSPARENT,       KC_TRANSPARENT, KC_TRANSPARENT,           KC_TRANSPARENT, KC_TRANSPARENT,
-    KC_TRANSPARENT, STATS_ADMIN_MACRO, KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT, MEH(KC_E), KC_TRANSPARENT,                                 CPY_ALL_MACRO,       LSFT(KC_F11),   LSFT(LCTL(KC_F)),     LALT(KC_UP),    INTELLIJ_FIND_FILE_MACRO, KC_TRANSPARENT, KC_TRANSPARENT,
+    KC_TRANSPARENT, JUNK_MAIL_MACRO,   PERSONAL_MAIL_MACRO, KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, TO(7),                                          CUT_ALL_MACRO,       MEH(KC_1),      TD(EMOJI_GIB),        TD(EMOJI_LOOK), MEH(KC_9),                MEH(KC_0),      KC_TRANSPARENT,
+    KC_TRANSPARENT, STATS_ADMIN_MACRO, KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                                 CPY_ALL_MACRO,       LSFT(KC_F11),   LSFT(LCTL(KC_F)),     LALT(KC_UP),    INTELLIJ_FIND_FILE_MACRO, KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      MEH(KC_S),         KC_TRANSPARENT, KC_TRANSPARENT,                                                                      LCTL(KC_F11),   LALT(LCTL(KC_LEFT)),  LALT(KC_DOWN),  LALT(LCTL(KC_RIGHT)),     KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT, KC_TRANSPARENT, ALTF4_MACRO,                                    REPLACE_PASTE_MACRO, LALT(KC_F8),    LCTL(KC_KP_SLASH),    LALT(KC_INS), KC_TRANSPARENT,           KC_TRANSPARENT, KC_TRANSPARENT,
     KC_TRANSPARENT, KC_TRANSPARENT,    KC_TRANSPARENT,      KC_TRANSPARENT,    KC_TRANSPARENT,                                                                                                 KC_F8,                KC_F7,          LSFT(KC_F8),              KC_TRANSPARENT, KC_TRANSPARENT,
@@ -456,9 +458,53 @@ void f5_reset (qk_tap_dance_state_t *state, void *user_data) {
   f5_tap_state.state = 0;
 }
 
+// ------------------------- GIB EMOJI TAP DANCE ----------------------------
+
+void dance_gib (qk_tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+      register_code(KC_LCTL); register_code(KC_LALT); register_code(KC_LSHIFT);
+      register_code(KC_2); unregister_code(KC_2);
+      unregister_code(KC_LCTL); unregister_code(KC_LALT); unregister_code(KC_LSHIFT);
+    } else if (state->count == 2) {
+      register_code(KC_LCTL); register_code(KC_LALT); register_code(KC_LSHIFT);
+      register_code(KC_3); unregister_code(KC_3);
+      unregister_code(KC_LCTL); unregister_code(KC_LALT); unregister_code(KC_LSHIFT);
+    } else if (state->count == 3) {
+      register_code(KC_LCTL); register_code(KC_LALT); register_code(KC_LSHIFT);
+      register_code(KC_4); unregister_code(KC_4);
+      unregister_code(KC_LCTL); unregister_code(KC_LALT); unregister_code(KC_LSHIFT);
+    }
+    
+    reset_tap_dance(state);
+}
+
+// ------------------------- LOOK EMOJI TAP DANCE ----------------------------
+
+void dance_look (qk_tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+      register_code(KC_LCTL); register_code(KC_LALT); register_code(KC_LSHIFT);
+      register_code(KC_5); unregister_code(KC_5);
+      unregister_code(KC_LCTL); unregister_code(KC_LALT); unregister_code(KC_LSHIFT);
+    } else if (state->count == 2) {
+      register_code(KC_LCTL); register_code(KC_LALT); register_code(KC_LSHIFT);
+      register_code(KC_6); unregister_code(KC_6);
+      unregister_code(KC_LCTL); unregister_code(KC_LALT); unregister_code(KC_LSHIFT);
+    } else if (state->count == 3) {
+      register_code(KC_LCTL); register_code(KC_LALT); register_code(KC_LSHIFT);
+      register_code(KC_7); unregister_code(KC_7);
+      unregister_code(KC_LCTL); unregister_code(KC_LALT); unregister_code(KC_LSHIFT);
+    } else if (state->count == 4) {
+      register_code(KC_LCTL); register_code(KC_LALT); register_code(KC_LSHIFT);
+      register_code(KC_8); unregister_code(KC_8);
+      unregister_code(KC_LCTL); unregister_code(KC_LALT); unregister_code(KC_LSHIFT);
+    }
+    
+    reset_tap_dance(state);
+}
+
 // ------------------------- MEOW TAP DANCE ----------------------------
 
-//instanalize an instance of 'tap' for the 'f5' tap dance.
+//instanalize an instance of 'tap' for the 'meow' tap dance.
 static tap meow_tap_state = {
   .is_press_action = true,
   .state = 0
@@ -596,5 +642,7 @@ void meow_finished (qk_tap_dance_state_t *state, void *user_data) {
 qk_tap_dance_action_t tap_dance_actions[] = {
   [AT_ALT] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL,at_alt_finished, at_alt_reset,150),
   [F5_CLEAR_CACHE] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL,f5_finished, f5_reset,200),
-  [MEOW] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(meow,meow_finished,NULL,200)
+  [MEOW] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(meow,meow_finished,NULL,200),
+  [EMOJI_GIB] = ACTION_TAP_DANCE_FN(dance_gib),
+  [EMOJI_LOOK] = ACTION_TAP_DANCE_FN(dance_look)
 };
